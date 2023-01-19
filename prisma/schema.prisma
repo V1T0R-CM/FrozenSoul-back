@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      String   @unique
+  password  String
+}
+
+model Character {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now())
+  name               String
+  origin             String
+  description        String
+  lore               String
+  profession         String
+  consequences       Int
+  materialization    String
+  eap                Int
+  Soul               Soul                 @relation(fields: [soulId], references: [id])
+  soulId             Int
+  Attributes         Attributes           @relation(fields: [attributesId], references: [id])
+  attributesId       Int
+  Features           Features             @relation(fields: [featuresId], references: [id])
+  featuresId         Int
+  Notes              Notes                @relation(fields: [notesId], references: [id])
+  notesId            Int
+  Inventory          Inventory[]
+  Grimoire           Grimoire[]
+  CharacterLanguages CharacterLanguages[]
+}
+
+model Attributes {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  itl       Int
+  cui       Int
+  int       Int
+  car       Int
+  agi       Int
+  con       Int
+  for       Int
+  Character Character[]
+}
+
+model Features {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  def       Int
+  des       Int
+  Character Character[]
+}
+
+model Soul {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  name          String
+  Development   Development @relation(fields: [developmentId], references: [id])
+  developmentId Int
+  Character     Character[]
+}
+
+model Development {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  conhecimento   Int
+  fisico         Int
+  fisicoMagico   Int
+  magico         Int
+  transfusao     Int
+  estudo         Int
+  materializacao Int
+  reserva        Int
+  Soul           Soul[]
+}
+
+model Inventory {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  Character   Character @relation(fields: [characterId], references: [id])
+  Item        Item      @relation(fields: [itemId], references: [id])
+  characterId Int
+  itemId      Int
+}
+
+model Item {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  name           String
+  description    String
+  space          String
+  eopprice       Int
+  ItemCategory   ItemCategory @relation(fields: [itemCategoryId], references: [id])
+  itemCategoryId Int
+  Inventory      Inventory[]
+}
+
+model ItemCategory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  Item      Item[]
+}
+
+model Notes {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  note      String
+  Character Character[]
+}
+
+model Grimoire {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  Character   Character @relation(fields: [characterId], references: [id])
+  Ability     Ability   @relation(fields: [abilityId], references: [id])
+  characterId Int
+  abilityId   Int
+}
+
+model Ability {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  name      String
+  Grimoire  Grimoire[]
+}
+
+model CharacterLanguages {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  Character   Character @relation(fields: [characterId], references: [id])
+  Languages   Languages @relation(fields: [languagesId], references: [id])
+  characterId Int
+  languagesId Int
+}
+
+model Languages {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now())
+  name               String
+  CharacterLanguages CharacterLanguages[]
+}
